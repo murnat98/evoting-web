@@ -8,17 +8,20 @@
 
     <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
     <link href="css/custom.css" rel="stylesheet">
+
+	<script src="js/jquery.min.js"></script>
+    <script src="js/bluecrypt-keypairs.min.js"></script>
+    <script src="js/jsrsasign-all-min.js"></script>
+    <script src="js/js_cookie.min.js"></script>
 </head>
 <body class="text-center">
-<form class="custom-form" action="" method="POST">
+<form class="custom-form" action="http://192.168.0.171:8080/api/vote/" id="vote-form" method="POST">
     <h1 class="h3 mb-3 font-weight-normal">Vote!</h1>
     <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    <label for="inputPublicKey" class="sr-only">Password</label>
-    <input type="text" id="inputPublicKey" class="form-control" placeholder="Private key" required>
-    <select class="form-control" style="margin-bottom: 10px;">
+    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <select class="form-control" name="vote" id="select-vote" style="margin-bottom: 10px;">
         <option value="1">Vladimir Putin</option>
         <option value="2">Dmitry Medvedev</option>
         <option value="3">Vladimir Putin</option>
@@ -26,6 +29,8 @@
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
 </form>
+
+<script src="js/base.js"></script>
 </body>
 </html>
 
