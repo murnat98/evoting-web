@@ -1,34 +1,26 @@
 function generateKey() {
-	Keypairs.generate({
-		kty: 'RSA',
-		modulusLength: 2048
-	}).then(function (pair) {
-		Keypairs.export({
-			jwk: pair.private, 
-			private: true 
-		}).then(function (pem) {
-  			console.log("private key:\n" + pem);
-			Cookies.set('private_key', pem);
-		});
-
-		Keypairs.export({
-			jwk: pair.public, 
-			public: true
-		}).then(function (pem) {
-  			console.log("public key:\n" + pem);
-			Cookies.set('public_key', pem);
-		});
-	});
+	var crypt = new JSEncrypt({default_key_size: 2048});
+	crypt.getKey();
+	Cookies.set('private_key', crypt.getPrivateKey());
+	Cookies.set('public_key', crypt.getPublicKey());
 }
 
 function sign(message) {
+	/*
 	var rsa = new RSAKey();
 	rsa.readPrivateKeyFromPEMString(Cookies.get('private_key'));
 
 	return rsa.sign(message, 'sha256');
+	*/
+	var sig = new KJUR.crypto.Signature({"alg": "SHA256withRSA"});
+	sig.init(Cookies.get('private_key'));
+	sig.updateString(message);
+	var hSigVal = sig.sign();
+	return hSigVal;
 }
 
 $("#sign-up-form").submit(function(e) {
+	generateKey();
 	$("<input />").attr("type", "hidden")
           		  .attr("name", "public_key")
           		  .attr("value", Cookies.get("public_key"))
@@ -38,11 +30,9 @@ $("#sign-up-form").submit(function(e) {
 });
 
 $("#vote-form").submit(function(e) {
-	var email = $('#vote-form>input[name="email"]').val();
 	var vote_id = $('#select-vote').val();
-	var msg = email + vote_id;
-	var signature = sign(msg);
-	console.log(Cookies.get('private_key'));
+	var signature = sign(vote_id);
+	console.log(Cookies.get('public_key'));
 	$("<input />").attr("type", "hidden")
                   .attr("name", "sign")
                   .attr("value", signature)
@@ -50,7 +40,7 @@ $("#vote-form").submit(function(e) {
 
 	$("<input />").attr("type", "hidden")
                   .attr("name", "message")
-                  .attr("value", msg)
+                  .attr("value", vote_id)
                   .appendTo("#vote-form");
 
     return true;
